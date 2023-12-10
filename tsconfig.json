@@ -17,7 +17,7 @@
       "@responses/*": ["src/responses/*"],
       "@middelwares/*": ["src/middlewares/*"],
       "@services/*": ["src/services/*"],
-      "@interfaces/*": ["src/interfaces/*"],
+      "@interfaces/*": ["src/interfaces/*"]
     },                                     
     "resolveJsonModule": true,                        
     "allowJs": true,                                  

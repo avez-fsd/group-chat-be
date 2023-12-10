@@ -1,12 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import '@datasources/models/connection'
 
 import routes from './routes'
 import addRequestId from '@middelwares/request-id.middleware';
 import response from "@helpers/response.helper"
 import express, { Express, NextFunction, Request, Response } from 'express';
 import WebSocket, { WebSocketServer } from 'ws';
-import { socketMsgHandler } from './sockets/socket.handler';
+import { socketConnectionHandler, socketMsgHandler } from './sockets/socket.handler';
+import { verifyWsToken } from '@middelwares/auth.middleware';
+import { RedisHelper } from '@helpers/redis.helper';
+import { WS_CONNECTION_CLOSE_REASON } from '@constants';
 
 const app = express();
 
@@ -17,6 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(addRequestId);
+
+RedisHelper.getInstance();
 
 app.use('/', routes);
 
@@ -29,13 +35,37 @@ const myServer = app.listen(port, () => {
 });
 
 const wsServer: WebSocketServer = new WebSocket.Server({
-    noServer: true
+    noServer: true,
+    clientTracking: true
 })  
 
-wsServer.on("connection", function(ws: WebSocket) {
-    ws.on("message", function(msg) {
-        socketMsgHandler(wsServer, ws, msg);
-    })
+wsServer.on("connection", async (ws: any, req: Request) => {
+
+    try {
+        // await verifyWsToken(req, ws);
+
+        socketConnectionHandler(wsServer, ws, req);
+
+        ws.on("message", function(msg:string) {
+            socketMsgHandler(wsServer, ws, msg);
+            wsServer.clients.forEach((client:any)=>{
+                if(client === ws) console.log('yes', client.clientId, client.roomId)
+                else console.log('no', client.clientId, client.roomId)
+            })
+        })
+
+        ws.on('error', (error:Error) => {
+            console.error(`WebSocket error: ${error.message}`);
+            // You can customize the error handling here
+        });
+    } catch (error) {
+        console.log(error,'here the error')
+        ws.close(WS_CONNECTION_CLOSE_REASON.NORMAL_CLOSURE, 'Something went wrong.');
+    }
+})
+
+wsServer.on('error', function(error){
+    console.log(error)
 })
 
 

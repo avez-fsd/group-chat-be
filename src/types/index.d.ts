@@ -9,6 +9,7 @@ declare global {
       fullURL?: string;
       event?: string
       eventName?: string;
+      user?: User;
     }
   }
 

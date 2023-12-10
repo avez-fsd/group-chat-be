@@ -48,7 +48,10 @@ class AuthController {
     async verify(req: Request, res: Response){
         try {
             console.log('test')
-            
+            res.set("Cache-Control", `public, max-age=${3600}`)
+            return response.success(req, res, {
+                'test':'test'
+            });
         } catch (err:any) {
             return response.failed(req, res, err.message, null, err.httpCode);
         }

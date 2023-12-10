@@ -1,6 +1,8 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import User, { userAssociations } from './user.model';
-import { messageAssociations } from './message.model';
+import Message, { messageAssociations } from './message.model';
+import Group, { groupAssociations } from './group.model';
+import UserGroup from './user-group.model';
 
 const dbConnectionOptions: SequelizeOptions = {
   dialect: 'mysql',
@@ -15,21 +17,24 @@ const dbConnectionOptions: SequelizeOptions = {
       rejectUnauthorized: process.env.NODE_ENV === 'production' ? true : false,
     }
   },
-  models: [__dirname + `/*-model.ts`] ,
+  models: [__dirname + `/*model.ts`] ,
 };
 
 const dbConnection = new Sequelize(dbConnectionOptions);
 dbConnection.addModels(
   [
-    User
+    User,
+    Message,
+    UserGroup,
+    Group
   ]
 );
-
 
 // dbConnection.sync({force:true})
 
 userAssociations();
 messageAssociations();
+groupAssociations();
 
 
 export default dbConnection;

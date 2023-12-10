@@ -26,6 +26,11 @@ export default class Group extends Model {
   groupId?: string;
 
   @Column({
+    field: 'created_by'
+  })
+  createdBy?: string;
+
+  @Column({
     field: 'created_at',
   })
   createdAt?: Date;

@@ -50,6 +50,16 @@ export class RedisHelper {
     return this.client?.get(key, callback);
   }
 
+  sadd(key: string, value:any, exp: number) {
+    if (this.client === null) this.init();
+    return this.client?.sadd(key, value);
+  }
+
+  isMember(key: string, value:any) {
+    if (this.client === null) this.init();
+    return this.client?.sismember(key, value);
+  }
+
   quit() {
     this.client?.disconnect();
     this.client?.quit();

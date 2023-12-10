@@ -1,4 +1,4 @@
-import User from "@datasources/models/user-model";
+import User from "@datasources/models/user.model";
 import { getUserByEmail } from "@datasources/user.datasource";
 import UnauthorizedException from "@exceptions/unauthorized.exception";
 import jwtHelper from "@helpers/jwt.helper";
