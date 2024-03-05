@@ -23,7 +23,7 @@ export default class Message extends Model {
   @Column({
     field: 'group_id'
   })
-  groupId?: string;
+  groupId?: number;
 
   @Column({
     field: 'message'

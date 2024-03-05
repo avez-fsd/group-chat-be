@@ -1,5 +1,5 @@
 export interface CreateGroupRequest {
     name: string;
-    groupId?:string;
+    groupUniqueId?:string;
     createdBy?:number;
 }

@@ -10,7 +10,9 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { socketConnectionHandler, socketMsgHandler } from './sockets/socket.handler';
 import { verifyWsToken } from '@middelwares/auth.middleware';
 import { RedisHelper } from '@helpers/redis.helper';
-import { WS_CONNECTION_CLOSE_REASON } from '@constants';
+import { ALLOWED_ORIGINS, WS_CONNECTION_CLOSE_REASON } from '@constants';
+import logger from '@helpers/logger.helper';
+import cors, { CorsOptions } from 'cors';
 
 const app = express();
 
@@ -24,7 +26,16 @@ app.use(addRequestId);
 
 RedisHelper.getInstance();
 
+// Add a list of allowed origins.
+// If you have more origins you would like to add, you can add them to the array below.
+const options: CorsOptions = {
+    origin: ALLOWED_ORIGINS,
+    // credentials:true
+};
+app.use(cors(options));
+
 app.use('/', routes);
+
 
 // handle 404 and 5xx http code
 app.use(response.handler404);
@@ -39,33 +50,26 @@ const wsServer: WebSocketServer = new WebSocket.Server({
     clientTracking: true
 })  
 
-wsServer.on("connection", async (ws: any, req: Request) => {
-
+wsServer.on("connection", async (ws: ExtWebSocket, req: Request) => {
     try {
-        // await verifyWsToken(req, ws);
-
         socketConnectionHandler(wsServer, ws, req);
 
-        ws.on("message", function(msg:string) {
-            socketMsgHandler(wsServer, ws, msg);
-            wsServer.clients.forEach((client:any)=>{
-                if(client === ws) console.log('yes', client.clientId, client.roomId)
-                else console.log('no', client.clientId, client.roomId)
-            })
+        ws.on("message", async function(data:string) {
+            socketMsgHandler(wsServer, ws, data);
         })
 
         ws.on('error', (error:Error) => {
-            console.error(`WebSocket error: ${error.message}`);
-            // You can customize the error handling here
+            logger.error(`Error at ws connection error event`, error)
         });
+
     } catch (error) {
-        console.log(error,'here the error')
+        logger.error(`Error at ws connection event`, error)
         ws.close(WS_CONNECTION_CLOSE_REASON.NORMAL_CLOSURE, 'Something went wrong.');
     }
 })
 
 wsServer.on('error', function(error){
-    console.log(error)
+    logger.error(`Error at ws server error event`, error);
 })
 
 
@@ -73,4 +77,14 @@ myServer.on('upgrade', async function upgrade(request, socket, head) {
     wsServer.handleUpgrade(request, socket, head, function done(ws) {
       wsServer.emit('connection', ws, request);
     });
+});
+
+process.on('uncaughtException', (error) => {
+    logger.error(`Uncaught Exception`, error)
+    // Optionally, you can handle the error gracefully and close connections if needed
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error(`Unhandled Rejection`, reason);
+    // Optionally, you can handle the rejection gracefully and close connections if needed
 });

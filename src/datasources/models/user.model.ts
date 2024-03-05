@@ -1,6 +1,7 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 import Message from './message.model';
 import Group from './group.model';
+import UserGroup from './user-group.model';
 
 @Table({
   tableName: 'users',
@@ -15,6 +16,11 @@ export default class User extends Model {
     autoIncrement: true
   })
   id?: number;
+
+  @Column({
+    field: 'user_uid'
+  })
+  userUniqueId?: string;
 
   @Column({
     field: 'name'
@@ -40,9 +46,13 @@ export default class User extends Model {
     field: 'updated_at',
   })
   updatedAt?: Date;
+
+  userGroups?: UserGroup[];
+
+  groups?: Group[];
 }
 
 export function userAssociations() {
     User.hasMany(Message);
-    User.belongsToMany(Group, {through: 'UserGroup'})
+    User.belongsToMany(Group, {through: 'userGroup'})
 }

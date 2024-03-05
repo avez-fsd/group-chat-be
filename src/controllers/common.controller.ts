@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import response from '@helpers/response.helper';
 import { TEXT } from '@constants';
 import appConfig from '@configs/app.config';
+var md5 = require('md5');
 
 const CommonController = {
   index: (req: Request, res: Response) => response.success(req, res, { version: appConfig.version }),

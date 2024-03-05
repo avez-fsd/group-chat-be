@@ -35,6 +35,12 @@ class JwtHelper {
     decodeJwtToken(token:string){
         return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
     }
+
+    getTokenFromHeaderAndDecode(authHeaders:string) {
+        const token = this.getJwtTokenFromHeader(authHeaders);
+        if(!token) return null;
+        return this.decodeJwtToken(token);
+    }
 }
 
 export default new JwtHelper();

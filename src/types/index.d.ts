@@ -1,3 +1,5 @@
+import { WebSocketServer, WebSocket } from "ws";
+
 export {}
 
 declare global {
@@ -12,7 +14,10 @@ declare global {
       user?: User;
     }
   }
-
+  export interface ExtWebSocket extends WebSocket {
+    groupUniqueId?: sring;
+    userUniqueId?: string;
+  }
   namespace Error {
     export interface Errback {
       message?: string;

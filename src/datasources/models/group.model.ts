@@ -1,5 +1,6 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 import User from './user.model';
+import UserGroup from './user-group.model';
 
 @Table({
   tableName: 'groups',
@@ -21,9 +22,9 @@ export default class Group extends Model {
   name?: string;
 
   @Column({
-    field: 'group_id'
+    field: 'group_uid'
   })
-  groupId?: string;
+  groupUniqueId?: string;
 
   @Column({
     field: 'created_by'
@@ -42,5 +43,9 @@ export default class Group extends Model {
 }
 
 export function groupAssociations() {
-    Group.belongsToMany(User, {through: 'UserGroup'});
+    Group.belongsToMany(User, {through: 'userGroup'});
+    // Group.belongsTo(UserGroup, {
+    //   foreignKey: 'id',
+    //   targetKey: 'groupId'
+    // })
 }

@@ -3,8 +3,9 @@ export const TEXT = {
 }
 
 export const EVENTS = {
-    JOIN_GRP_ROOM: 'join_room',
-    SEND_GRP_MSG: 'send_grp_msg'
+    JOIN_GRP: 'join_group',
+    SEND_GRP_MSG: 'send_grp_msg',
+    GRP_MSG_RECIEVED: 'grp_msg_received'
 }
 
 export enum WS_CONNECTION_CLOSE_REASON {
@@ -12,3 +13,8 @@ export enum WS_CONNECTION_CLOSE_REASON {
     POLICY_VIOLATION=1008,
     INVALID_DATA=1007
 }
+
+export const ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+];
+  

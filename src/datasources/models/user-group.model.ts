@@ -1,4 +1,6 @@
 import { Table, Column, Model } from 'sequelize-typescript';
+import Group from './group.model';
+import User from './user.model';
 
 @Table({
   tableName: 'user_groups',
@@ -36,5 +38,8 @@ export default class UserGroup extends Model {
 }
 
 export function userGroupAssociations() {
-
+  // UserGroup.hasOne(Group, {
+  //   foreignKey: 'id',
+  //   sourceKey: 'groupId'
+  // })
 }

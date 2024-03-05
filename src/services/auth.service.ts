@@ -4,6 +4,8 @@ import UnauthorizedException from "@exceptions/unauthorized.exception";
 import jwtHelper from "@helpers/jwt.helper";
 import { SignInRequest, SignUpRequest } from "@interfaces/auth.interface";
 import bcrypt from 'bcryptjs'
+import { v4 as uuidv4 } from 'uuid';
+
 
 class AuthService {
 
@@ -12,11 +14,14 @@ class AuthService {
         
         const user = await User.create({
             ...signUpData,
+            userUniqueId: uuidv4(),
             password: hashedPassword
         });
 
         const payload = {
-            id: user.id
+            id: user.userUniqueId,
+            name: user.name,
+            email: user.email
         };
         return jwtHelper.generateToken(payload);
     }
@@ -29,7 +34,9 @@ class AuthService {
         if(!isPasswordValid) throw new UnauthorizedException("Invalid Email Or Password!", "", 403);
         
         const payload = {
-            id: user.id
+            id: user.userUniqueId,
+            name: user.name,
+            email: user.email
         }
         
         return jwtHelper.generateToken(payload);

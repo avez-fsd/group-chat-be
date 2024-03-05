@@ -5,7 +5,7 @@ import logger from '@helpers/logger.helper';
 
 const finalResponse = (req: Request, res: Response, message: string, data: any, code: number) => {
   const ok = code.toString().startsWith("2");
-
+  res.status(code)
   if (ok) {
     res.set("Content-Type", `application/json`);
     res.send(data)
@@ -41,7 +41,7 @@ const handler = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handler5xx: (err: any, req: Request, res: Response, next: NextFunction) => {
-    console.log('here the request coming')
+    console.log("this is throwing", err.httpCode)
     const e = err as unknown as CustomException;
     Object.assign(err, { error: err });
 

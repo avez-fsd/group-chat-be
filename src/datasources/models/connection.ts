@@ -2,7 +2,7 @@ import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import User, { userAssociations } from './user.model';
 import Message, { messageAssociations } from './message.model';
 import Group, { groupAssociations } from './group.model';
-import UserGroup from './user-group.model';
+import UserGroup, { userGroupAssociations } from './user-group.model';
 
 const dbConnectionOptions: SequelizeOptions = {
   dialect: 'mysql',
@@ -35,6 +35,6 @@ dbConnection.addModels(
 userAssociations();
 messageAssociations();
 groupAssociations();
-
+userGroupAssociations();
 
 export default dbConnection;
