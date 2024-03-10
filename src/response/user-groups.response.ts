@@ -10,7 +10,15 @@ export const userGroupsResponse = (user: User) => {
             return {
                 name: group.name,
                 groupUniqueId: group.groupUniqueId,
-                isAdmin: group.createdBy === user.id
+                isGroup: group.isGroup,
+                isAdmin: group.createdBy === user.id,
+                otherParticipants: group?.otherParticipants?.map(user=> {
+                    return {
+                        name: user.name,
+                        email: user.email,
+                        userUniqueId: user.userUniqueId
+                    }
+                })
             }
         }
         )

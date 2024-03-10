@@ -38,8 +38,12 @@ export default class UserGroup extends Model {
 }
 
 export function userGroupAssociations() {
-  // UserGroup.hasOne(Group, {
-  //   foreignKey: 'id',
-  //   sourceKey: 'groupId'
-  // })
+  UserGroup.belongsTo(User, {
+    foreignKey: 'userId',
+    targetKey: 'id'
+  })
+  UserGroup.belongsTo(Group, {
+    foreignKey: 'groupId',
+    targetKey: 'id'
+  })
 }

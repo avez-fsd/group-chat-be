@@ -9,6 +9,7 @@ import { getGroupByGroupUniqueId } from "@datasources/group.datasource";
 import InvalidRequestException from "@exceptions/invalid-request.exception";
 import { userGroupsResponse } from "src/response/user-groups.response";
 import User from "@datasources/models/user.model";
+import { createGroupResponse } from "src/response/create-group.response";
 class GroupController {
 
     async list(req: Request, res: Response){
@@ -28,11 +29,20 @@ class GroupController {
     async create(req: Request, res: Response){
         try {
             validateRequest(CreateGroupSchema, req.body, req);
-            
-            const grpService = new GroupService();
-            const grp = await grpService.createGroup(req.body as CreateGroupRequest, req.user)
 
-            return response.success(req, res, grp);
+            if(req.body.users.includes(req.user?.userUniqueId)) throw new InvalidRequestException('Invalid users data');
+
+            const grpService = new GroupService();
+            if(req.body.isGroup) {
+                const grp = await grpService.createGroup(req.body as CreateGroupRequest, req.user)
+                if(!grp) return response.failed(req, res, "Failed to create a group");
+                return response.success(req, res, createGroupResponse(grp));
+            }
+
+            const grp = await grpService.createPrivateGroup(req.body as CreateGroupRequest, req.user);
+            if(!grp) return response.failed(req, res, "Failed to create a group");
+
+            return response.success(req, res, createGroupResponse(grp));
             
         } catch (err:any) {
             logger.error(err.message, err);
@@ -45,7 +55,7 @@ class GroupController {
             validateRequest(JoinGroupSchema, req.body, req);
 
             const group = await getGroupByGroupUniqueId(req.body.groupUniqueId);
-            if(!group) throw new InvalidRequestException("Invalid group unique Id");
+            if(!group || !group?.isGroup) throw new InvalidRequestException("Invalid group unique Id");
 
             const grpService = new GroupService();
             const [,created] = await grpService.joinNewMember(group, req.user);

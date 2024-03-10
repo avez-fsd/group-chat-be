@@ -27,6 +27,11 @@ export default class Group extends Model {
   groupUniqueId?: string;
 
   @Column({
+    field: 'is_group'
+  })
+  isGroup?: boolean;
+
+  @Column({
     field: 'created_by'
   })
   createdBy?: string;
@@ -40,12 +45,23 @@ export default class Group extends Model {
     field: 'updated_at',
   })
   updatedAt?: Date;
+
+  userGroups?: UserGroup[];
+
+  otherParticipants?: User[];
 }
 
 export function groupAssociations() {
-    Group.belongsToMany(User, {through: 'userGroup'});
-    // Group.belongsTo(UserGroup, {
-    //   foreignKey: 'id',
-    //   targetKey: 'groupId'
-    // })
+    Group.belongsToMany(User, {through: 'userGroup', as:'user'});
+    Group.belongsToMany(User, {through: 'userGroup', as: 'otherParticipants'});
+    Group.hasMany(UserGroup, {
+      foreignKey: 'groupId',
+      sourceKey: 'id',
+      as: 'userGroup1'
+    })
+    Group.hasMany(UserGroup, {
+      foreignKey: 'groupId',
+      sourceKey: 'id',
+      as: 'userGroup2'
+    })
 }

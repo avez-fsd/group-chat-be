@@ -46,6 +46,18 @@ export const getUserByUniqueId = async (userUniqueId:string) => {
 
 }
 
+export const getUsersByUniqueIds = async (userUniqueIds:string[]) => {
+    return await User.findAll({
+        where: {
+            userUniqueId: {
+                [Op.in]: userUniqueIds       
+            }
+        }
+    })
+}
+
+
+
 export async function getUsers(
     page: number,
     pageSize: number,

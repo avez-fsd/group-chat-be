@@ -55,4 +55,8 @@ export default class User extends Model {
 export function userAssociations() {
     User.hasMany(Message);
     User.belongsToMany(Group, {through: 'userGroup'})
+    User.hasMany(UserGroup, {
+      foreignKey:'userId',
+      sourceKey: 'id'
+    })
 }
