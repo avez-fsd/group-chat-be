@@ -79,18 +79,19 @@ class GroupService {
         return null;
     }
 
-    async assoicateSocketToUser(groupUniqueId:string, useUniqueId:string, ws:ExtWebSocket) {
+    async assoicateSocketToUser(groupUniqueId:string, userUniqueId:string, ws:ExtWebSocket) {
         try {
             const group = await getGroupByGroupUniqueId(groupUniqueId); // can be cached in redis
             if(!group){
-                ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Invalid Request Data');
+                ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Invalid Group Id');
                 return;
             }
             ws.groupUniqueId = groupUniqueId;
-            ws.userUniqueId = useUniqueId;
+            ws.userUniqueId = userUniqueId;
         } catch (error) {
+            console.log(error,'here check the error')
             logger.error(`Error at group service => assoicateSocketToUser`,error)
-            ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Invalid Request Data');
+            ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Something went wrong while initiating the socket, please try again later.');
         }
     }
 

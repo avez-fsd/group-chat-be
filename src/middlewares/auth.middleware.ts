@@ -23,14 +23,11 @@ export const verifyToken = async (req:Request, res: Response, next: NextFunction
 }
 
 export const verifyWsToken = async (req:Request, ws:any) =>{
-  if (!req.headers.authorization) throw new UnauthorizedException("Unauthorized");
-  const token = jwtHelper.getJwtTokenFromHeader(req.headers.authorization);
+  if (!req.headers['sec-websocket-protocol']) throw new UnauthorizedException("Unauthorized");
+  
+  await jwtHelper.verifyToken(req.headers['sec-websocket-protocol']);
 
-  if(!token) throw new UnauthorizedException("Unauthorized");
-
-  await jwtHelper.verifyToken(token);
-
-  const jwtPayload = jwtHelper.decodeJwtToken(token);
+  const jwtPayload = jwtHelper.decodeJwtToken(req.headers['sec-websocket-protocol']);
 
   const user = await getUserByUniqueId(jwtPayload?.id);
   if(!user) throw new UnauthorizedException("Unauthorized");

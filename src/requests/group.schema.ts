@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const CreateGroupSchema = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().required().allow(""),
     isGroup: Joi.boolean().required(),
     users: Joi.array().when('isGroup', {
       is: true,

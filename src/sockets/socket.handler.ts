@@ -37,11 +37,11 @@ export const socketConnectionHandler = async (wsServer: WebSocketServer, ws: Ext
         switch (searchParams.event) {
             case EVENTS.JOIN_GRP:
                 const grpService = new GroupService();
-                const user = jwtHelper.getTokenFromHeaderAndDecode(req.headers.authorization);
+                const user = jwtHelper.decodeJwtToken(req.headers['sec-websocket-protocol']);
                 grpService.assoicateSocketToUser(searchParams.groupUniqueId, user?.id, ws);
                 break;
             default:
-                ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Invalid Request Data');
+                ws.close(WS_CONNECTION_CLOSE_REASON.INVALID_DATA, 'Invalid Event Type');
                 break;
         }
     } catch (error) {

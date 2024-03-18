@@ -12,8 +12,14 @@ export interface SocketMessageEvent<DataType> {
 
 export interface MessageReceivedEvent {
     message: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      name: string;
+      email: string;
+      userUniqueId: string;
+    };
 }
-
 export interface HeaderMessageEvent {
     authorization: string;
 }

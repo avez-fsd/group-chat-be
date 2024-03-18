@@ -1,5 +1,6 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 import User from './user.model';
+import Group from './group.model';
 
 @Table({
   tableName: 'messages',
@@ -39,8 +40,11 @@ export default class Message extends Model {
     field: 'updated_at',
   })
   updatedAt?: Date;
+
+  user?:User
 }
 
 export function messageAssociations() {
     Message.belongsTo(User);
+    Message.belongsTo(Group);
 }

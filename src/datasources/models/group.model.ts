@@ -1,6 +1,7 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 import User from './user.model';
 import UserGroup from './user-group.model';
+import Message from './message.model';
 
 @Table({
   tableName: 'groups',
@@ -63,5 +64,9 @@ export function groupAssociations() {
       foreignKey: 'groupId',
       sourceKey: 'id',
       as: 'userGroup2'
+    })
+    Group.hasMany(Message, {
+      foreignKey: 'groupId',
+      sourceKey: 'id'
     })
 }

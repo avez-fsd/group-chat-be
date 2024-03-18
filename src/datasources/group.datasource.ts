@@ -14,6 +14,15 @@ export const getGroupByGroupUniqueId = (groupUniqueId: string) => {
     })
 }
 
+export const isUserBelongsToGroup = (groupId:number, userId:number) => {
+    return UserGroup.findOne({
+        where: {
+            userId,
+            groupId
+        }
+    })
+}
+
 export const isPrivateGroupExists = async (userIds: number[]) => {
     const data = await Group.findOne({
         include: [{
