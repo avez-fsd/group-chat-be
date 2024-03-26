@@ -80,7 +80,6 @@ export async function getUsers(
                   }
                 }
             ]
-        
         }
     }
     const users = await User.findAndCountAll({

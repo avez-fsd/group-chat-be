@@ -27,7 +27,8 @@ export const getUserGroups = (user: User) => {
                     }
                 }],
             }
-        ]
+        ],
+        order: [ [Group,'created_at', 'DESC']]
     })
 }
 

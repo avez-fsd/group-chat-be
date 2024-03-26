@@ -1,6 +1,7 @@
 
 import { WS_CONNECTION_CLOSE_REASON } from "@constants";
 import { createGroupDb, getGroupByGroupUniqueId, isPrivateGroupExists } from "@datasources/group.datasource";
+import WebSocketConnections from "@datasources/in-memory/websocket-connections.in-memory";
 import Group from "@datasources/models/group.model";
 import User from "@datasources/models/user.model";
 import { addUserToGroup, bulkInsertUserGroup, getUserGroups } from "@datasources/user-group.datasource";
@@ -8,7 +9,6 @@ import { getUsersByUniqueIds } from "@datasources/user.datasource";
 import InvalidRequestException from "@exceptions/invalid-request.exception";
 import NotFoundException from "@exceptions/not-found.exception";
 import logger from "@helpers/logger.helper";
-import { RedisHelper } from "@helpers/redis.helper";
 import { CreateGroupRequest } from "@interfaces/group.interface";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -88,6 +88,7 @@ class GroupService {
             }
             ws.groupUniqueId = groupUniqueId;
             ws.userUniqueId = userUniqueId;
+            WebSocketConnections.connections.push(ws);
         } catch (error) {
             console.log(error,'here check the error')
             logger.error(`Error at group service => assoicateSocketToUser`,error)

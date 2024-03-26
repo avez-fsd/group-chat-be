@@ -1,5 +1,4 @@
-import { WebSocket, WebSocketServer } from "ws";
-import { v4 as uuidv4 } from 'uuid';
+import { WebSocketServer } from "ws";
 import { EVENTS, WS_CONNECTION_CLOSE_REASON } from "@constants";
 import GroupService from "@services/group.service";
 import ChatService from "@services/chat.service";
