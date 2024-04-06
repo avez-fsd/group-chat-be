@@ -1,0 +1,28 @@
+version: "3.1"
+services:
+  mysqldb:
+    image: mysql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+  redisdb:
+    image: redis
+    ports:
+      - 6378:6379
+
+  groupchat:
+    image: avez202/group-chat-be:0.0.1.RELEASE
+    ports:
+      - 8000:8000
+    environment:
+      PORT: 8000
+      DB_HOST: mysqldb
+      DB_PORT: 3306
+      DB_DATABASE: group_chat
+      DB_USERNAME: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      REDIS_HOST: redisdb
+      REDIS_PORT: 6379
+      JWT_SECRET: test
